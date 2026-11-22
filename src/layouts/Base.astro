@@ -6,6 +6,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { useT } from '../i18n';
 import { href, site, type Lang, type Route } from '../data/site';
+import { waLink } from '../lib/format';
 
 interface Props { lang: Lang; route?: Route; title: string; description: string; image?: string; }
 const { lang, route = '', title, description, image = '/media/og.jpg' } = Astro.props;
@@ -55,10 +56,14 @@ const jsonLd = {
     <Header lang={lang} route={route} />
     <main id="main"><slot /></main>
     <Footer lang={lang} />
+    <a class="fab" href={waLink(site.whatsapp, 'Hi Jeffrey Nortey Productions!')} target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.7-5.4A8.5 8.5 0 1 1 21 11.5z"/><path d="M9 8.8c.2 2.6 2.7 5.1 5.9 5.9l1.2-1.4-2-1-.9.7a4.4 4.4 0 0 1-1.9-1.9l.7-.9-1-2z" fill="currentColor" stroke="none"/></svg>
+    </a>
     <script>
       // header solidifies on scroll + mobile menu
       const header = document.querySelector('.site-header') as HTMLElement;
-      const onScroll = () => header.classList.toggle('solid', window.scrollY > 40);
+      const fab = document.querySelector('.fab');
+      const onScroll = () => { header.classList.toggle('solid', window.scrollY > 40); fab?.classList.toggle('show', window.scrollY > 420); };
       onScroll(); addEventListener('scroll', onScroll, { passive: true });
       const burger = document.querySelector('.burger') as HTMLButtonElement;
       burger?.addEventListener('click', () => {

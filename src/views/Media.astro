@@ -31,7 +31,7 @@ const fb = (u: string) => `https://www.facebook.com/plugins/post.php?href=${enco
         </div>
         <a class="btn btn-gold arrow" href={social.channel.url} rel="noopener" target="_blank">{t('media.subscribe')}</a>
       </div>
-      <div class="vgrid">{vids.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
+      <div class="vgrid rail">{vids.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
 
       <h3 class="rv" style="margin:70px 0 24px;font-size:1.6rem;text-transform:uppercase">{t('media.shorts')}</h3>
       <div class="sgrid">{shorts.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
@@ -45,7 +45,7 @@ const fb = (u: string) => `https://www.facebook.com/plugins/post.php?href=${enco
         <div style="display:grid;gap:18px"><span class="eyebrow">{t('media.ig')}</span><h2 class="title">@jeffreynortey1 · @vibesthemovie</h2><p class="lead">{t('media.privacy')}</p></div>
         <a class="btn btn-line arrow" href={site.socials.instagram} rel="noopener" target="_blank">{t('media.ig')}</a>
       </div>
-      <div class="grid g3">
+      <div class="grid g3 rail cards">
         {igPosts.map((p) => (
           <div class="social-card rv">
             <q>{p.caption || 'Instagram post'}</q>
@@ -67,7 +67,7 @@ const fb = (u: string) => `https://www.facebook.com/plugins/post.php?href=${enco
         <div style="display:grid;gap:18px"><span class="eyebrow">{t('media.fb')}</span><h2 class="title">Facebook</h2></div>
         <a class="btn btn-line arrow" href={site.socials.facebook} rel="noopener" target="_blank">{t('media.fb')}</a>
       </div>
-      <div class="grid g3">
+      <div class="grid g3 rail cards">
         {fbPosts.map((p) => (
           <div class="social-card rv">
             <q>{p.text || 'Facebook post'}</q>

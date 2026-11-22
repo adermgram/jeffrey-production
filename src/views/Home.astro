@@ -68,7 +68,7 @@ const svc = [1, 2, 3, 4, 5] as const;
         <h2 class="title" style="max-width:18ch">{t('svc.title')}</h2>
         <p class="lead">{t('svc.lead')}</p>
       </div>
-      <div class="grid g3">
+      <div class="grid g3 rail cards">
         {svc.map((n, i) => (
           <a class="svc rv" href={href(lang, 'services')} style={`transition-delay:${i * 70}ms`}>
             <span class="num">0{n}</span>
@@ -92,7 +92,7 @@ const svc = [1, 2, 3, 4, 5] as const;
         <div style="display:grid;gap:18px"><span class="eyebrow">{t('work.eyebrow')}</span><h2 class="title">{t('work.title')}</h2></div>
         <a class="btn btn-line arrow" href={href(lang, 'work')}>{t('work.all')}</a>
       </div>
-      <div class="bento">
+      <div class="bento rail">
         <a class="poster b1 rv" href={href(lang, 'work')}>
           <div class="pic"><Image src={work.vibes} alt="Vibes The Movie poster" widths={[480, 800]} sizes="(max-width:860px) 100vw, 40vw" /></div>
           <div class="cap"><small>{t('work.vibes.k')}</small><h3>Vibes The Movie</h3></div>
