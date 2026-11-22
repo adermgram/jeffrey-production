@@ -21,3 +21,11 @@ npm run build     # -> dist/ (deploy to any static host)
 | Logo SVG | `scripts/vectorize_logo.py logo/IMG_1709.PNG` -> `public/brand/` |
 
 `legacy/` holds the previous site for reference; delete once the rebuild is approved.
+
+## Deploying (Netlify)
+Build `npm run build`, publish `dist` (already set in `netlify.toml`).
+
+| Environment variable | Purpose |
+|---|---|
+| `SITE_URL` | Real domain once connected, e.g. `https://jeffreynortey.com` (canonical links, share images, sitemap). Not needed for previews — Netlify's own `URL` is used automatically. |
+| `PUBLIC_PRODUCTION` | Set to `true` **at launch**. Until then the site is `noindex` and `robots.txt` blocks search engines. |

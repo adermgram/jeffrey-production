@@ -10,6 +10,7 @@ import { href, site, type Lang, type Route } from '../data/site';
 interface Props { lang: Lang; route?: Route; title: string; description: string; image?: string; }
 const { lang, route = '', title, description, image = '/media/og.jpg' } = Astro.props;
 const t = useT(lang);
+const live = import.meta.env.PUBLIC_PRODUCTION === 'true';
 const full = route === '' ? `${site.name} — Film, Comedy & Live Production, Accra` : `${title} — ${site.name}`;
 const site_ = Astro.site!;
 const url = new URL(href(lang, route), site_).href;
@@ -33,6 +34,7 @@ const jsonLd = {
     <title>{full}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0a0a0b" />
+    {!live && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={url} />
     <link rel="alternate" hreflang="en" href={alt('en')} />
     <link rel="alternate" hreflang="ak" href={alt('tw')} />
