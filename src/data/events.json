@@ -1,0 +1,37 @@
+[
+  {
+    "id": "glorified-2026",
+    "status": "upcoming",
+    "title": "Glorified 2026",
+    "kind": "Live production",
+    "date": null,
+    "dateLabel": "Date to be announced",
+    "venue": "Accra",
+    "time": null,
+    "image": "glorified",
+    "tickets": { "embedUrl": null, "provider": null, "ussd": null, "phones": [], "tiers": [] }
+  },
+  {
+    "id": "3-faces-2",
+    "status": "past",
+    "title": "The 3 Faces of Jeffrey Nortey 2.0",
+    "kind": "Stage show",
+    "date": "2025-06-14",
+    "dateLabel": "14 June 2025",
+    "venue": "National Theatre, Accra",
+    "time": "7:00 PM",
+    "image": "three-faces",
+    "partners": ["Focuz Afriq Media", "eVivi Foods", "FAM Global"],
+    "tickets": {
+      "embedUrl": null,
+      "provider": null,
+      "ussd": "*713*33*783#",
+      "phones": ["0249232558", "0207813921"],
+      "tiers": [
+        { "name": "Regular", "price": 150 },
+        { "name": "Double", "price": 280 },
+        { "name": "VIP", "price": 300 }
+      ]
+    }
+  }
+]

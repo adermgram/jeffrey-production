@@ -1,0 +1,73 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import VideoCard from '../components/VideoCard.astro';
+import social from '../data/social.json';
+import { portraits } from '../lib/assets';
+import { useT } from '../i18n';
+import { href, site, type Lang } from '../data/site';
+import { waLink } from '../lib/format';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const vids = social.long.filter((v) => v.brandSafe).slice(0, 3);
+const strip = portraits.slice(2, 8);
+const faces = [['jn.actor', 'jn.actor.d'], ['jn.comic', 'jn.comic.d'], ['jn.poet', 'jn.poet.d']] as const;
+---
+<Base lang={lang} route="jeffrey" title="Jeffrey Nortey" description="Jeffrey Nortey — Ghanaian actor, comedian and spoken-word artist. Watch his work, see portraits and book him.">
+  <header class="page-hero" style="padding-bottom:0">
+    <div class="wrap split" style="align-items:end;gap:clamp(20px,4vw,60px)">
+      <div style="display:grid;gap:22px;padding-bottom:clamp(30px,5vw,70px)">
+        <a class="muted" href={href(lang)} style="font-size:.85rem">← {t('jn.back')}</a>
+        <span class="eyebrow">{t('jn.eyebrow')}</span>
+        <h1 class="display">{t('jn.title')}</h1>
+        <p class="lead" style="color:var(--gold)">{t('jn.sub')}</p>
+        <p class="lead">{t('jn.bio')}</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a class="btn btn-gold arrow" href={waLink(site.whatsapp, 'Hi, I would like to book Jeffrey Nortey.')} rel="noopener" target="_blank">{t('jn.book')}</a>
+          <a class="btn btn-line" href={site.socials.instagram} rel="noopener" target="_blank">Instagram</a>
+          <a class="btn btn-line" href={site.socials.youtube} rel="noopener" target="_blank">YouTube</a>
+        </div>
+      </div>
+      <div class="frame" style="aspect-ratio:4/5;max-width:520px;justify-self:end;width:100%;border-radius:var(--radius) var(--radius) 0 0">
+        <Image src={portraits[1]} alt="Jeffrey Nortey" widths={[480, 800]} sizes="(max-width:860px) 90vw, 520px" loading="eager" />
+      </div>
+    </div>
+  </header>
+  <div class="sprockets" aria-hidden="true"></div>
+
+  <section class="light">
+    <div class="wrap">
+      <div class="sec-head rv"><span class="eyebrow">{t('jn.faces')}</span><h2 class="title">{t('jn.sub')}</h2></div>
+      <div class="grid g3">
+        {faces.map(([a, b], i) => <div class="svc rv" style={`transition-delay:${i * 80}ms`}><span class="num">0{i + 1}</span><h3>{t(a)}</h3><p>{t(b)}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="wrap">
+      <div class="sec-head rv"><span class="eyebrow">{t('media.yt')}</span><h2 class="title">{t('jn.watch')}</h2></div>
+      <div class="vgrid">{vids.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head row rv"><div style="display:grid;gap:18px"><span class="eyebrow">{t('gal.eyebrow')}</span><h2 class="title">{t('jn.photos')}</h2></div><a class="btn btn-line arrow" href={href(lang, 'gallery')}>{t('nav.gallery')}</a></div>
+      <div class="grid g3">
+        {strip.map((p, i) => <div class="frame rv" style="aspect-ratio:4/5"><Image src={p} alt={`Jeffrey Nortey portrait ${i + 1}`} widths={[400, 700]} sizes="(max-width:700px) 90vw, 33vw" loading="lazy" /></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="wrap rv">
+      <h2 class="display">{t('jn.book')}</h2>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a class="btn btn-gold arrow" href={href(lang, 'contact')}>{t('cta.btn1')}</a>
+        <a class="btn btn-line" href={href(lang)}>{t('jn.back')}</a>
+      </div>
+    </div>
+  </section>
+</Base>

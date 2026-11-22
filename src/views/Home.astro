@@ -1,0 +1,181 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import VideoCard from '../components/VideoCard.astro';
+import TicketSlot from '../components/TicketSlot.astro';
+import social from '../data/social.json';
+import events from '../data/events.json';
+import { work, eventArt, portraits } from '../lib/assets';
+import { compact, waLink } from '../lib/format';
+import { useT } from '../i18n';
+import { href, site, type Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const years = new Date().getFullYear() - site.launchYear;
+const safe = social.long.filter((v) => v.brandSafe);
+const featured = safe[0];
+const more = safe.slice(1, 4);
+const next = events.find((e) => e.status === 'upcoming')!;
+const reel = ['Vibes The Movie', 'The 3 Faces of Jeffrey Nortey', 'Glorified 2026', 'Digital Series', 'Live Production', 'Branded Content'];
+const svc = [1, 2, 3, 4, 5] as const;
+---
+<Base lang={lang} title="Home" description="Jeffrey Nortey Productions — an Accra production house making films, branded content, digital series and live shows, with 191K YouTube subscribers and 32M+ views.">
+
+  <!-- HERO: triptych of vertical clips, film-strip style -->
+  <section class="hero">
+    <div class="hero-media" aria-hidden="true">
+      {['a', 'b', 'c'].map((k) => (
+        <div class="cell" style={`background-image:url(/media/hero/${k}.jpg)`}>
+          <video muted loop playsinline preload="none" data-src={`/media/hero/${k}.mp4`} poster={`/media/hero/${k}.jpg`}></video>
+        </div>
+      ))}
+    </div>
+    <div class="wrap hero-inner">
+      <span class="eyebrow">{t('hero.eyebrow')}</span>
+      <h1 class="display">{t('hero.title')}</h1>
+      <p class="lead">{t('hero.sub')}</p>
+      <div class="hero-cta">
+        <a class="btn btn-gold arrow" href={href(lang, 'work')}>{t('hero.cta1')}</a>
+        <a class="btn btn-line" href={href(lang, 'contact')}>{t('hero.cta2')}</a>
+      </div>
+    </div>
+    <span class="scroll-hint">{t('hero.scroll')}</span>
+  </section>
+  <div class="sprockets" aria-hidden="true"></div>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      {[...reel, ...reel].map((r) => <span>{r}</span>)}
+    </div>
+  </div>
+
+  <!-- PROOF -->
+  <section style="padding-block:0">
+    <div class="wrap stats rv">
+      <div class="stat"><b>{compact(social.stats.ytSubscribers)}</b><span>{t('stats.subs')}</span></div>
+      <div class="stat"><b>{compact(social.stats.ytViews)}+</b><span>{t('stats.views')}</span></div>
+      <div class="stat"><b>{social.stats.ytVideos}</b><span>{t('stats.videos')}</span></div>
+      <div class="stat"><b>{years}</b><span>{t('stats.years')}</span></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="light" style="margin-top:clamp(40px,6vw,80px)">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="eyebrow">{t('svc.eyebrow')}</span>
+        <h2 class="title" style="max-width:18ch">{t('svc.title')}</h2>
+        <p class="lead">{t('svc.lead')}</p>
+      </div>
+      <div class="grid g3">
+        {svc.map((n, i) => (
+          <a class="svc rv" href={href(lang, 'services')} style={`transition-delay:${i * 70}ms`}>
+            <span class="num">0{n}</span>
+            <h3>{t(`svc.${n}.t` as any)}</h3>
+            <p>{t(`svc.${n}.d` as any)}</p>
+            <span class="proof">{t(`svc.${n}.p` as any)}</span>
+          </a>
+        ))}
+        <a class="svc rv" href={href(lang, 'contact')} style="background:var(--ink);color:var(--bone);align-content:center;justify-items:start">
+          <h3 style="font-size:1.7rem;text-transform:uppercase">{t('svc.cta')}</h3>
+          <span class="btn btn-gold arrow">{t('nav.book')}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED WORK -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head row rv">
+        <div style="display:grid;gap:18px"><span class="eyebrow">{t('work.eyebrow')}</span><h2 class="title">{t('work.title')}</h2></div>
+        <a class="btn btn-line arrow" href={href(lang, 'work')}>{t('work.all')}</a>
+      </div>
+      <div class="bento">
+        <a class="poster b1 rv" href={href(lang, 'work')}>
+          <div class="pic"><Image src={work.vibes} alt="Vibes The Movie poster" widths={[480, 800]} sizes="(max-width:860px) 100vw, 40vw" /></div>
+          <div class="cap"><small>{t('work.vibes.k')}</small><h3>Vibes The Movie</h3></div>
+        </a>
+        <a class="poster b2 rv" href={href(lang, 'work')} style="transition-delay:90ms">
+          <div class="pic"><Image src={work.threeFaces} alt="The 3 Faces of Jeffrey Nortey 2.0 poster" widths={[480, 800]} sizes="(max-width:860px) 100vw, 33vw" /></div>
+          <div class="cap"><small>{t('work.faces.k')}</small><h3>The 3 Faces of Jeffrey Nortey</h3></div>
+        </a>
+        <a class="poster b3 rv" href={href(lang, 'events')} style="transition-delay:180ms">
+          <div class="pic"><Image src={work.glorified} alt="Glorified live production" widths={[400, 700]} sizes="(max-width:860px) 100vw, 25vw" style="object-position:center top" /></div>
+          <div class="cap"><small>{t('work.glorified.k')}</small><h3>Glorified 2026</h3></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WATCH -->
+  <section class="panel">
+    <div class="wrap">
+      <div class="sec-head row rv">
+        <div style="display:grid;gap:18px"><span class="eyebrow">{t('media.eyebrow')}</span><h2 class="title">{t('work.watch')}</h2><p class="lead">{t('work.watch.lead')}</p></div>
+        <a class="btn btn-line arrow" href={href(lang, 'media')}>{t('media.eyebrow')}</a>
+      </div>
+      <div class="split">
+        <div class="rv"><VideoCard v={featured} label={t('work.views')} /></div>
+        <div class="grid" style="gap:22px">
+          {more.map((v) => (
+            <div class="rv" style="display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:16px;align-items:center">
+              <div class="yt"><button data-yt={v.id} aria-label={`Play: ${v.title}`}><img src={v.thumb} alt="" loading="lazy" /><span class="play"><i style="transform:scale(.7)"></i></span></button></div>
+              <div><h3 style="font-size:1rem;font-weight:700;letter-spacing:0">{v.title}</h3><span class="muted" style="font-size:.85rem">{compact(v.views)} {t('work.views')}</span></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKETS -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head rv"><span class="eyebrow">{t('ev.eyebrow')}</span><h2 class="title">{t('tk.title')}</h2><p class="lead">{t('tk.d')}</p></div>
+      <div class="rv"><TicketSlot event={next} lang={lang} art={eventArt[next.image]} /></div>
+    </div>
+  </section>
+
+  <!-- JEFFREY TEASER -->
+  <section class="light">
+    <div class="wrap split flip">
+      <div class="frame rv" style="aspect-ratio:4/5;max-width:480px;justify-self:center;width:100%">
+        <Image src={portraits[0]} alt="Jeffrey Nortey on stage" widths={[480, 800]} sizes="(max-width:860px) 90vw, 480px" />
+      </div>
+      <div class="rv" style="display:grid;gap:20px;justify-items:start">
+        <span class="eyebrow">{t('jn.eyebrow')}</span>
+        <h2 class="title">{t('jn.teaser.t')}</h2>
+        <p class="lead">{t('jn.teaser.d')}</p>
+        <a class="btn btn-gold arrow" style="background:var(--ink);color:var(--bone)" href={href(lang, 'jeffrey')}>{t('jn.teaser.cta')}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band">
+    <div class="wrap rv">
+      <span class="eyebrow">{t('cta.eyebrow')}</span>
+      <h2 class="display">{t('cta.title')}</h2>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a class="btn btn-gold arrow" href={href(lang, 'contact')}>{t('cta.btn1')}</a>
+        <a class="btn btn-line" href={waLink(site.whatsapp, 'Hi Jeffrey Nortey Productions, I would like to discuss a project.')} rel="noopener" target="_blank">{t('cta.btn2')}</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Load hero videos after first paint, only on capable connections; posters stay as the fallback.
+    const nav = navigator as any;
+    const saver = nav.connection?.saveData || /(^|[^a-z])(2g|3g)/.test(nav.connection?.effectiveType || '');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!saver && !reduce) {
+      const start = () => document.querySelectorAll<HTMLVideoElement>('.hero-media video').forEach((v) => {
+        if (getComputedStyle(v.parentElement!).display === 'none') return;
+        v.src = v.dataset.src!; v.addEventListener('playing', () => v.classList.add('on'), { once: true }); v.play().catch(() => {});
+      });
+      'requestIdleCallback' in window ? (window as any).requestIdleCallback(start, { timeout: 2500 }) : setTimeout(start, 1200);
+    }
+  </script>
+</Base>

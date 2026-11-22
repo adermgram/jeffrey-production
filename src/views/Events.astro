@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import TicketSlot from '../components/TicketSlot.astro';
+import events from '../data/events.json';
+import { eventArt } from '../lib/assets';
+import { useT } from '../i18n';
+import type { Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const upcoming = events.filter((e) => e.status === 'upcoming');
+const past = events.filter((e) => e.status === 'past');
+---
+<Base lang={lang} route="events" title={t('nav.events')} description="Upcoming live productions and tickets from Jeffrey Nortey Productions, plus past shows including The 3 Faces of Jeffrey Nortey at the National Theatre.">
+  <PageHero eyebrow={t('ev.eyebrow')} title={t('ev.title')} lead={t('ev.lead')} />
+  <section>
+    <div class="wrap" style="display:grid;gap:clamp(40px,6vw,80px)">
+      <div>
+        <h2 class="title rv" style="font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:28px">{t('ev.upcoming')}</h2>
+        <div class="grid">{upcoming.map((e) => <div class="rv"><TicketSlot event={e} lang={lang} art={eventArt[e.image]} /></div>)}</div>
+      </div>
+      <div>
+        <h2 class="title rv" style="font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:28px">{t('ev.past')}</h2>
+        <div class="grid">{past.map((e) => <div class="rv"><TicketSlot event={e} lang={lang} art={eventArt[e.image]} /></div>)}</div>
+      </div>
+    </div>
+  </section>
+  <CtaBand lang={lang} />
+</Base>

@@ -1,0 +1,17 @@
+---
+import { useT } from '../i18n';
+import { href, site, type Lang } from '../data/site';
+import { waLink } from '../lib/format';
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+---
+<section class="cta-band">
+  <div class="wrap rv">
+    <span class="eyebrow">{t('cta.eyebrow')}</span>
+    <h2 class="display">{t('cta.title')}</h2>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-gold arrow" href={href(lang, 'contact')}>{t('cta.btn1')}</a>
+      <a class="btn btn-line" href={waLink(site.whatsapp, 'Hi Jeffrey Nortey Productions, I would like to discuss a project.')} rel="noopener" target="_blank">{t('cta.btn2')}</a>
+    </div>
+  </div>
+</section>

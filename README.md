@@ -1,47 +1,23 @@
-# Jeffrey Nortey — Official Website
+# Jeffrey Nortey Productions — website
 
-A fast, self-contained multilingual website built from the Claude Design handoff.
-No build step, no framework, no dependencies — just static files.
-
-## Run it
-
-Because the hero uses background videos, open it through a web server (not `file://`):
+Astro static site (English + Twi). Production-company-first; Jeffrey the personality lives at `/jeffrey/`.
 
 ```bash
-cd jeffrey-nortey-site
-python3 -m http.server 8000
-# then open http://localhost:8000
+npm install
+npm run dev       # http://localhost:4321
+npm run build     # -> dist/ (deploy to any static host)
 ```
 
-Any static host works too (Netlify, Vercel, GitHub Pages, Cloudflare Pages, S3…):
-just upload the whole folder — `index.html` is the entry point.
+## Where things live
+| What | File |
+|---|---|
+| Contact details, socials | `src/data/site.ts` |
+| Events + **ticketing embed** | `src/data/events.json` (set `tickets.embedUrl` when the ticketing partner is ready) |
+| Copy (EN) / Twi draft | `src/i18n/en.ts`, `src/i18n/tw.ts` (missing Twi keys fall back to English) |
+| Pages | `src/views/*.astro` (routes in `src/pages/` and `src/pages/tw/`) |
+| Brand tokens | top of `src/styles/global.css` |
+| Gallery photos | drop `.jpg` into `src/assets/gallery/` (auto-optimised) |
+| Social data | `scripts/build_data.py "<scrape folder>"` -> `src/data/social.json` + thumbnails |
+| Logo SVG | `scripts/vectorize_logo.py logo/IMG_1709.PNG` -> `public/brand/` |
 
-## What's inside
-
-- `index.html` — page shell, fonts, meta/SEO tags, CSS theme tokens
-- `app.js` — the whole site: routing, 7-language content, theme + language
-  switch, hero video crossfade, modals, forms, animations
-- `assets/` — photos, project posters, logos, favicon
-- `uploads/` — the 9 hero background video clips
-- `robots.txt`, `sitemap.xml`, `LLMs.txt` — as shipped in the handoff
-
-## Features
-
-- **Pages** (hash routing): Home, About, Work, Comedy, Music & Poetry, Faces,
-  Collaborate, Gallery, Press, Events, Contact, Privacy, plus a 404 page.
-- **7 languages**: English, Twi, French, Spanish, Portuguese, 中文, 日本語
-  (with Noto Sans SC/JP for CJK). Choice is remembered.
-- **Light / dark theme** toggle, remembered between visits.
-- **Auto-rotating** hero role words and press quotes; scroll-reveal animations;
-  crossfading video background on the home hero.
-- **Booking modal** and enquiry forms that build a pre-filled email to
-  godfreybrewn@gmail.com.
-- SEO: per-page `<title>`/description, Open Graph, Twitter cards, JSON-LD.
-
-## Notes
-
-- Small emoji icons (faces, awards, values) load from `emojicdn.elk.sh`, exactly
-  as in the original design. They need an internet connection to appear.
-- Fonts load from Google Fonts.
-- To change any text, edit the `DICT` object at the top of `app.js` — every
-  language lives there.
+`legacy/` holds the previous site for reference; delete once the rebuild is approved.

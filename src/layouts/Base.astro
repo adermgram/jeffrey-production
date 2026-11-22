@@ -1,0 +1,81 @@
+---
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { useT } from '../i18n';
+import { href, site, type Lang, type Route } from '../data/site';
+
+interface Props { lang: Lang; route?: Route; title: string; description: string; image?: string; }
+const { lang, route = '', title, description, image = '/media/og.jpg' } = Astro.props;
+const t = useT(lang);
+const full = route === '' ? `${site.name} — Film, Comedy & Live Production, Accra` : `${title} — ${site.name}`;
+const site_ = Astro.site!;
+const url = new URL(href(lang, route), site_).href;
+const alt = (l: Lang) => new URL(href(l, route), site_).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'Organization', name: site.name, url: site_.href, logo: new URL('/brand/logo.svg', site_).href,
+      email: site.email, telephone: site.phoneDisplay, address: { '@type': 'PostalAddress', addressLocality: 'Accra', addressCountry: 'GH' },
+      sameAs: Object.values(site.socials) },
+    { '@type': 'WebSite', name: site.name, url: site_.href, inLanguage: ['en', 'ak'] },
+  ],
+};
+---
+<!doctype html>
+<html lang={lang === 'tw' ? 'ak' : 'en'} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{full}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0a0a0b" />
+    <link rel="canonical" href={url} />
+    <link rel="alternate" hreflang="en" href={alt('en')} />
+    <link rel="alternate" hreflang="ak" href={alt('tw')} />
+    <link rel="alternate" hreflang="x-default" href={alt('en')} />
+    <link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={full} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={new URL(image, site_).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+  </head>
+  <body>
+    <a class="skip" href="#main">{t('skip')}</a>
+    <Header lang={lang} route={route} />
+    <main id="main"><slot /></main>
+    <Footer lang={lang} />
+    <script>
+      // header solidifies on scroll + mobile menu
+      const header = document.querySelector('.site-header') as HTMLElement;
+      const onScroll = () => header.classList.toggle('solid', window.scrollY > 40);
+      onScroll(); addEventListener('scroll', onScroll, { passive: true });
+      const burger = document.querySelector('.burger') as HTMLButtonElement;
+      burger?.addEventListener('click', () => {
+        const open = header.classList.toggle('open');
+        burger.setAttribute('aria-expanded', String(open));
+      });
+      // scroll reveal
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+      document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+      // click-to-load YouTube (keeps pages fast, no tracking until the user presses play)
+      document.addEventListener('click', (ev) => {
+        const b = (ev.target as HTMLElement).closest('[data-yt]') as HTMLElement | null;
+        if (!b) return;
+        const f = document.createElement('iframe');
+        f.src = `https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0&modestbranding=1`;
+        f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+        f.title = b.getAttribute('aria-label') || 'Video';
+        b.replaceWith(f);
+      });
+    </script>
+  </body>
+</html>

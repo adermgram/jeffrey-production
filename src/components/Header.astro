@@ -1,0 +1,23 @@
+---
+import logo from '../../public/brand/logo.svg?raw';
+import { useT } from '../i18n';
+import { href, routes, type Lang, type Route } from '../data/site';
+const { lang, route = '' } = Astro.props as { lang: Lang; route?: Route };
+const t = useT(lang);
+---
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href={href(lang)} aria-label="Jeffrey Nortey Productions — home" set:html={logo} />
+    <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+    <nav class="nav-links" id="nav-links" aria-label="Main">
+      {routes.filter((r) => r !== 'contact').map((r) => (
+        <a href={href(lang, r)} aria-current={route === r ? 'page' : undefined}>{t(`nav.${r}` as any)}</a>
+      ))}
+      <div class="lang" role="group" aria-label="Language">
+        <a href={href('en', route)} hreflang="en" aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+        <a href={href('tw', route)} hreflang="ak" aria-current={lang === 'tw' ? 'true' : undefined}>TWI</a>
+      </div>
+      <a class="btn btn-gold btn-sm" href={href(lang, 'contact')}>{t('nav.book')}</a>
+    </nav>
+  </div>
+</header>

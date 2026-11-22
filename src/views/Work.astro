@@ -1,0 +1,54 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import VideoCard from '../components/VideoCard.astro';
+import social from '../data/social.json';
+import { work } from '../lib/assets';
+import { compact } from '../lib/format';
+import { useT } from '../i18n';
+import { href, site, type Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const cases = [
+  { img: work.vibes, name: 'Vibes The Movie', k: t('work.vibes.k'), d: t('work.vibes.d'), link: site.socials.vibes, linkLabel: '@vibesthemovie on Instagram' },
+  { img: work.threeFaces, name: 'The 3 Faces of Jeffrey Nortey 2.0', k: t('work.faces.k'), d: t('work.faces.d'), link: href(lang, 'events'), linkLabel: t('nav.events') },
+  { img: work.glorified, name: 'Glorified 2026', k: t('work.glorified.k'), d: t('work.glorified.d'), link: href(lang, 'events'), linkLabel: t('nav.events') },
+  { img: work.skits, name: 'Skits & digital series', k: t('work.skits.k'), d: t('work.skits.d'), link: site.socials.youtube, linkLabel: t('media.channel') },
+];
+const vids = social.long.filter((v) => v.brandSafe).slice(0, 8);
+---
+<Base lang={lang} route="work" title={t('nav.work')} description="Portfolio of Jeffrey Nortey Productions: Vibes The Movie, The 3 Faces of Jeffrey Nortey, Glorified 2026 and a digital series with 32M+ views.">
+  <PageHero eyebrow={t('work.eyebrow')} title={t('work.title')} />
+
+  <section class="panel">
+    <div class="wrap" style="display:grid;gap:clamp(40px,6vw,90px)">
+      {cases.map((c, i) => (
+        <article class:list={['split rv', i % 2 === 1 && 'flip']}>
+          <div class="frame" style="aspect-ratio:4/5;max-height:640px;justify-self:center;width:100%;max-width:520px">
+            <Image src={c.img} alt={c.name} widths={[480, 800]} sizes="(max-width:860px) 90vw, 520px" />
+          </div>
+          <div style="display:grid;gap:18px;justify-items:start">
+            <span class="eyebrow">{c.k}</span>
+            <h2 class="title" style="font-size:clamp(1.9rem,3.8vw,3.2rem)">{c.name}</h2>
+            <p class="lead">{c.d}</p>
+            <a class="btn btn-line arrow" href={c.link} rel="noopener">{c.linkLabel}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head row rv">
+        <div style="display:grid;gap:18px"><span class="eyebrow">{t('media.yt')}</span><h2 class="title">{t('work.watch')}</h2><p class="lead">{t('work.watch.lead')} {compact(social.stats.ytViews)}+ {t('work.views')}.</p></div>
+        <a class="btn btn-line arrow" href={href(lang, 'media')}>{t('nav.media')}</a>
+      </div>
+      <div class="vgrid">{vids.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
+    </div>
+  </section>
+  <CtaBand lang={lang} />
+</Base>

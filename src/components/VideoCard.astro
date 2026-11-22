@@ -1,0 +1,14 @@
+---
+import { compact } from '../lib/format';
+const { v, label = 'views', headingLevel = 3 } = Astro.props as { v: any; label?: string; headingLevel?: number };
+---
+<div class="vcard">
+  <div class:list={['yt', v.short && 'short']}>
+    <button data-yt={v.id} aria-label={`Play: ${v.title}`}>
+      <img src={v.thumb} alt="" loading="lazy" decoding="async" width="640" height={v.short ? 1138 : 360} />
+      <span class="play"><i></i></span>
+      <span class="badge">{compact(v.views)} {label}{v.duration ? ` · ${v.duration}` : ''}</span>
+    </button>
+  </div>
+  <h3>{v.title}</h3>
+</div>

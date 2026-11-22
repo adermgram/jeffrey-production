@@ -1,0 +1,51 @@
+---
+// Ticketing integration point.
+// The ticketing partner's system is still being built. When it is ready, set `tickets.embedUrl` in
+// src/data/events.json for an event and it renders here as an iframe. Until then we show a clear
+// "coming soon" state plus any fallback ways to buy (USSD / phone) that the event already has.
+import { Image } from 'astro:assets';
+import { useT } from '../i18n';
+import { href, site, type Lang } from '../data/site';
+import { waLink } from '../lib/format';
+
+const { event, lang, art } = Astro.props as { event: any; lang: Lang; art?: ImageMetadata };
+const t = useT(lang);
+const up = event.status === 'upcoming';
+const tk = event.tickets;
+const notify = waLink(site.whatsapp, `Hi! Please notify me when tickets for ${event.title} go on sale.`);
+---
+<article class:list={['ticket', up && 'up']}>
+  <div class="art">{art && <Image src={art} alt={`${event.title} poster`} widths={[320, 520]} sizes="(max-width:680px) 100vw, 260px" />}</div>
+  <div class="body">
+    <div><span class:list={['pill', up && 'gold']}>{up ? t('ev.upcoming') : t('ev.closed')}</span></div>
+    <h3 style="font-size:clamp(1.5rem,3vw,2.4rem);text-transform:uppercase">{event.title}</h3>
+    <div class="meta">
+      <span>{event.kind}</span>
+      <span>{event.date ? event.dateLabel : t('ev.tba')}</span>
+      {event.time && <span>{event.time}</span>}
+      <span>{event.venue}</span>
+    </div>
+
+    {tk.tiers.length > 0 && (
+      <div>
+        <div class="muted" style="font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px">{t('ev.prices')}</div>
+        <div class="tiers">{tk.tiers.map((x: any) => <div class="tier"><small>{x.name}</small>{x.price}</div>)}</div>
+      </div>
+    )}
+
+    {up && tk.embedUrl && (
+      <iframe class="embed-slot" src={tk.embedUrl} title={`${event.title} tickets`} loading="lazy" allow="payment"></iframe>
+    )}
+
+    {up && !tk.embedUrl && (
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <span class="muted">{t('ev.soon')}</span>
+        <a class="btn btn-gold btn-sm arrow" href={notify} rel="noopener" target="_blank">{t('ev.notify')}</a>
+      </div>
+    )}
+
+    {tk.ussd && <p class="muted" style="margin:0;font-size:.92rem">{t('ev.dial')} <strong style="color:var(--text)">{tk.ussd}</strong></p>}
+    {tk.phones?.length > 0 && <p class="muted" style="margin:0;font-size:.92rem">{t('ev.enquire')}: {tk.phones.join(' · ')}</p>}
+    {event.partners && <p class="muted" style="margin:0;font-size:.85rem">{t('ev.sponsors')}: {event.partners.join(' · ')}</p>}
+  </div>
+</article>

@@ -1,0 +1,70 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import social from '../data/social.json';
+import { portraits } from '../lib/assets';
+import { useT } from '../i18n';
+import type { Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+
+const shots = await Promise.all(
+  portraits.map(async (src, i) => {
+    const thumb = await getImage({ src, width: 640, format: 'webp' });
+    const full = await getImage({ src, width: 1600, format: 'webp' });
+    return { kind: 'portraits', thumb: thumb.src, w: thumb.attributes.width, h: thumb.attributes.height, full: full.src, alt: `Jeffrey Nortey, portrait ${i + 1}` };
+  }),
+);
+// Production stills: episode art from our most-watched productions (self-hosted).
+const stills = [...social.long, ...social.shorts].filter((v) => v.brandSafe).slice(0, 12).map((v) => ({
+  kind: 'productions', thumb: v.thumb, full: v.thumb, w: v.short ? 540 : 640, h: v.short ? 960 : 360, alt: v.title,
+}));
+const all = [...stills, ...shots];
+---
+<Base lang={lang} route="gallery" title={t('nav.gallery')} description="Photo and still gallery from Jeffrey Nortey Productions: stages, sets, productions and portraits.">
+  <PageHero eyebrow={t('gal.eyebrow')} title={t('gal.title')} lead={t('gal.lead')} />
+  <section style="padding-top:20px">
+    <div class="wrap">
+      <div class="filters" role="group" aria-label="Filter">
+        <button class="chip" data-f="all" aria-pressed="true">{t('gal.all')}</button>
+        <button class="chip" data-f="productions" aria-pressed="false">{t('gal.productions')}</button>
+        <button class="chip" data-f="portraits" aria-pressed="false">{t('gal.portraits')}</button>
+      </div>
+      <div class="masonry">
+        {all.map((s) => (
+          <figure data-kind={s.kind}>
+            <button data-full={s.full} data-alt={s.alt} aria-label={`Open: ${s.alt}`}>
+              <img src={s.thumb} alt={s.alt} width={s.w} height={s.h} loading="lazy" decoding="async" />
+            </button>
+          </figure>
+        ))}
+      </div>
+      <p class="muted" style="margin-top:30px">{t('gal.note')}</p>
+    </div>
+  </section>
+  <CtaBand lang={lang} />
+
+  <dialog class="lightbox" aria-label="Image viewer">
+    <button class="lb-close" aria-label={t('gal.close')}>×</button>
+    <img alt="" />
+  </dialog>
+
+  <script>
+    const figs = [...document.querySelectorAll<HTMLElement>('.masonry figure')];
+    document.querySelectorAll<HTMLButtonElement>('.chip').forEach((c) => c.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+      figs.forEach((f) => (f.hidden = c.dataset.f !== 'all' && f.dataset.kind !== c.dataset.f));
+    }));
+    const dlg = document.querySelector('dialog.lightbox') as HTMLDialogElement;
+    const big = dlg.querySelector('img')!;
+    document.querySelector('.masonry')!.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button[data-full]') as HTMLButtonElement | null;
+      if (!b) return;
+      big.src = b.dataset.full!; big.alt = b.dataset.alt || ''; dlg.showModal();
+    });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg || (e.target as HTMLElement).closest('.lb-close')) dlg.close(); });
+  </script>
+</Base>

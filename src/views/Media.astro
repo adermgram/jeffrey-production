@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import VideoCard from '../components/VideoCard.astro';
+import social from '../data/social.json';
+import { compact } from '../lib/format';
+import { useT } from '../i18n';
+import { site, type Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const vids = social.long.filter((v) => v.brandSafe);
+const shorts = social.shorts.filter((v) => v.brandSafe).slice(0, 6);
+const igPosts = [...social.ig.slice(0, 4), ...social.vibes.slice(0, 2)];
+const fbPosts = social.fb.slice(0, 3);
+const ig = (u: string) => u.replace(/\/?$/, '/') + 'embed/';
+const fb = (u: string) => `https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(u)}&show_text=true&width=500`;
+---
+<Base lang={lang} route="media" title={t('nav.media')} description="Watch Jeffrey Nortey Productions on YouTube, Instagram and Facebook — skits, shorts and behind the scenes, embedded in one place.">
+  <PageHero eyebrow={t('media.eyebrow')} title={t('media.title')} lead={t('media.lead')} />
+
+  <!-- YouTube -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head row rv">
+        <div style="display:grid;gap:18px">
+          <span class="eyebrow">{t('media.yt')}</span>
+          <h2 class="title">{social.channel.name}</h2>
+          <p class="lead">{compact(social.stats.ytSubscribers)} subscribers · {compact(social.stats.ytViews)}+ {t('work.views')} · {social.stats.ytVideos} videos</p>
+        </div>
+        <a class="btn btn-gold arrow" href={social.channel.url} rel="noopener" target="_blank">{t('media.subscribe')}</a>
+      </div>
+      <div class="vgrid">{vids.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
+
+      <h3 class="rv" style="margin:70px 0 24px;font-size:1.6rem;text-transform:uppercase">{t('media.shorts')}</h3>
+      <div class="sgrid">{shorts.map((v) => <div class="rv"><VideoCard v={v} label={t('work.views')} /></div>)}</div>
+    </div>
+  </section>
+
+  <!-- Instagram -->
+  <section class="panel">
+    <div class="wrap">
+      <div class="sec-head row rv">
+        <div style="display:grid;gap:18px"><span class="eyebrow">{t('media.ig')}</span><h2 class="title">@jeffreynortey1 · @vibesthemovie</h2><p class="lead">{t('media.privacy')}</p></div>
+        <a class="btn btn-line arrow" href={site.socials.instagram} rel="noopener" target="_blank">{t('media.ig')}</a>
+      </div>
+      <div class="grid g3">
+        {igPosts.map((p) => (
+          <div class="social-card rv">
+            <q>{p.caption || 'Instagram post'}</q>
+            <div class="stat-line">
+              {p.views && <span>▶ {compact(p.views)}</span>}
+              {p.likes && <span>♥ {compact(p.likes)} {t('media.likes')}</span>}
+            </div>
+            <button class="btn btn-line btn-sm" data-embed={ig(p.url)} data-h="560">{t('media.load')}</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Facebook -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head row rv">
+        <div style="display:grid;gap:18px"><span class="eyebrow">{t('media.fb')}</span><h2 class="title">Facebook</h2></div>
+        <a class="btn btn-line arrow" href={site.socials.facebook} rel="noopener" target="_blank">{t('media.fb')}</a>
+      </div>
+      <div class="grid g3">
+        {fbPosts.map((p) => (
+          <div class="social-card rv">
+            <q>{p.text || 'Facebook post'}</q>
+            <div class="stat-line">{p.likes && <span>♥ {compact(p.likes)} {t('media.likes')}</span>}</div>
+            <button class="btn btn-line btn-sm" data-embed={fb(p.url)} data-h="520">{t('media.load')}</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  <CtaBand lang={lang} />
+
+  <script>
+    // Load a social post only when asked: no third-party scripts/cookies until the click, and a fast page.
+    document.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest('button[data-embed]') as HTMLButtonElement | null;
+      if (!b) return;
+      const f = document.createElement('iframe');
+      f.src = b.dataset.embed!; f.loading = 'lazy'; f.title = 'Social media post';
+      f.style.minHeight = (b.dataset.h || '500') + 'px'; f.allow = 'encrypted-media; fullscreen';
+      f.setAttribute('scrolling', 'no');
+      b.closest('.social-card')!.replaceChildren(f);
+    });
+  </script>
+</Base>

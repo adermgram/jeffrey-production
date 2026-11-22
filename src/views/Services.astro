@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { useT } from '../i18n';
+import { href, type Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+// CONFIRM WITH CLIENT: the exact service list and "included" bullets are inferred from the work shown online.
+const included: Record<number, string[]> = {
+  1: ['Concept & scripting', 'Direction & shoot', 'Edit, colour & sound', 'Social cut-downs and vertical versions'],
+  2: ['Writing & scripts', 'Casting & talent', 'Consistent publishing', 'YouTube, Instagram & Facebook distribution'],
+  3: ['Show concept & line-up', 'Staging & technical production', 'Ticketing integration', 'Filming for later release'],
+  4: ['Story development', 'Production & post', 'Poster & trailer', 'Screening and online release'],
+  5: ['Hosting & MC', 'Acting roles', 'Brand ambassador / voice', 'Spoken-word performance'],
+};
+const steps = ['Brief', 'Create', 'Produce', 'Distribute'];
+const stepsD = ['We learn your goal, audience and budget.', 'Concept, script and creative direction.', 'Shoot, stage or direct — then edit and finish.', 'Release where your audience already is.'];
+---
+<Base lang={lang} route="services" title={t('nav.services')} description="Commercials, branded content, digital series, live events, film and talent — full-service production from Jeffrey Nortey Productions in Accra.">
+  <PageHero eyebrow={t('svc.eyebrow')} title={t('svc.title')} lead={t('svc.lead')} />
+
+  <section class="light">
+    <div class="wrap" style="display:grid;gap:clamp(28px,4vw,56px)">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <article class="split rv" style="border-top:1px solid rgba(10,10,11,.15);padding-top:clamp(24px,3vw,44px);align-items:start">
+          <div style="display:grid;gap:14px">
+            <span style="font-family:var(--font-display);font-weight:900;font-size:clamp(3rem,6vw,5rem);line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink)">0{n}</span>
+            <h2 class="title" style="font-size:clamp(1.8rem,3.4vw,2.8rem)">{t(`svc.${n}.t` as any)}</h2>
+          </div>
+          <div style="display:grid;gap:18px">
+            <p class="lead" style="margin:0">{t(`svc.${n}.d` as any)}</p>
+            <ul style="list-style:none;padding:0;margin:0;display:grid;gap:10px">
+              {included[n].map((i) => <li style="display:flex;gap:12px;align-items:center"><span style="width:8px;height:8px;border-radius:50%;background:var(--gold);flex:none"></span>{i}</li>)}
+            </ul>
+            <span style="font-family:var(--font-display);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:#8a6500;font-weight:700">{t(`svc.${n}.p` as any)}</span>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head rv"><span class="eyebrow">How we work</span><h2 class="title">From brief to audience.</h2></div>
+      <div class="grid g4">
+        {steps.map((s, i) => (
+          <div class="svc rv" style={`transition-delay:${i * 80}ms`}><span class="num">0{i + 1}</span><h3>{s}</h3><p>{stepsD[i]}</p></div>
+        ))}
+      </div>
+      <div style="margin-top:40px" class="rv"><a class="btn btn-gold arrow" href={href(lang, 'work')}>{t('work.all')}</a></div>
+    </div>
+  </section>
+  <CtaBand lang={lang} />
+</Base>

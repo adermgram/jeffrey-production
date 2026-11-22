@@ -1,0 +1,45 @@
+---
+import logo from '../../public/brand/logo.svg?raw';
+import { useT } from '../i18n';
+import { href, routes, site, type Lang } from '../data/site';
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const s = site.socials;
+---
+<div class="sprockets dark" aria-hidden="true"></div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" style="width:160px;margin-bottom:18px" href={href(lang)} aria-label="Home" set:html={logo} />
+        <p class="muted" style="max-width:32ch">{t('ft.tag')}</p>
+      </div>
+      <div>
+        <h4>{t('ft.explore')}</h4>
+        <ul>{routes.map((r) => <li><a href={href(lang, r)}>{t(`nav.${r}` as any)}</a></li>)}</ul>
+      </div>
+      <div>
+        <h4>{t('ft.contact')}</h4>
+        <ul>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a href={`https://wa.me/${site.whatsapp}`} rel="noopener">WhatsApp {site.phoneDisplay}</a></li>
+          <li class="muted">{site.city}</li>
+        </ul>
+      </div>
+      <div>
+        <h4>{t('ft.follow')}</h4>
+        <ul>
+          <li><a href={s.youtube} rel="noopener" target="_blank">YouTube</a></li>
+          <li><a href={s.instagram} rel="noopener" target="_blank">Instagram</a></li>
+          <li><a href={s.facebook} rel="noopener" target="_blank">Facebook</a></li>
+          <li><a href={s.vibes} rel="noopener" target="_blank">Vibes The Movie</a></li>
+          <li><a href={s.linkedin} rel="noopener" target="_blank">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© {new Date().getFullYear()} {site.name}. {t('ft.rights')}</span>
+      <span>{t('ft.official')}</span>
+    </div>
+  </div>
+</footer>

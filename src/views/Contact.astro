@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { useT } from '../i18n';
+import { site, type Lang } from '../data/site';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useT(lang);
+const s = site.socials;
+const opts = [1, 2, 3, 4, 5, 6, 7] as const;
+const socials = [['YouTube', s.youtube], ['Instagram', s.instagram], ['Facebook', s.facebook], ['Vibes The Movie', s.vibes], ['LinkedIn', s.linkedin], ['X', s.x]];
+---
+<Base lang={lang} route="contact" title={t('nav.contact')} description="Contact Jeffrey Nortey Productions in Accra, Ghana — enquire about commercials, series, live events, film and booking Jeffrey Nortey.">
+  <PageHero eyebrow={t('ct.eyebrow')} title={t('ct.title')} lead={t('ct.lead')} />
+  <section style="padding-top:30px">
+    <div class="wrap split" style="align-items:start">
+      <div style="display:grid;gap:14px">
+        <a class="contact-card" href={`https://wa.me/${site.whatsapp}`} rel="noopener" target="_blank"><span class="ico">💬</span><small>{t('ct.wa')}</small><strong>{site.phoneDisplay}</strong></a>
+        <a class="contact-card" href={`mailto:${site.email}`}><span class="ico">✉️</span><small>{t('ct.email')}</small><strong>{site.email}</strong></a>
+        <div class="contact-card"><span class="ico">📍</span><small>{t('ct.loc')}</small><strong>{site.city}</strong></div>
+        <div style="margin-top:14px"><div class="eyebrow" style="margin-bottom:14px">{t('ct.follow')}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:10px">{socials.map(([n, u]) => <a class="chip" href={u} rel="noopener" target="_blank">{n}</a>)}</div>
+        </div>
+      </div>
+
+      <form class="form" id="enquiry" novalidate>
+        <h2 class="title" style="font-size:1.6rem">{t('ct.form')}</h2>
+        <div class="field"><label for="f-name">{t('ct.name')}</label><input id="f-name" name="name" autocomplete="name" required /></div>
+        <div class="field"><label for="f-org">{t('ct.org')}</label><input id="f-org" name="org" autocomplete="organization" /></div>
+        <div class="field"><label for="f-type">{t('ct.type')}</label>
+          <select id="f-type" name="type">{opts.map((n) => <option>{t(`ct.opt${n}` as any)}</option>)}</select></div>
+        <div class="field"><label for="f-msg">{t('ct.msg')}</label><textarea id="f-msg" name="msg" required></textarea></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button type="button" class="btn btn-gold" data-send="mail">{t('ct.send.mail')}</button>
+          <button type="button" class="btn btn-line" data-send="wa">{t('ct.send.wa')}</button>
+        </div>
+        <p class="muted" style="font-size:.85rem;margin:0">{t('ct.note')}</p>
+      </form>
+    </div>
+  </section>
+
+  <script define:vars={{ email: site.email, wa: site.whatsapp }}>
+    const form = document.getElementById('enquiry');
+    form.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-send]');
+      if (!b) return;
+      const v = (n) => (form.elements[n]?.value || '').trim();
+      if (!v('name') || !v('msg')) { (v('name') ? form.elements.msg : form.elements.name).focus(); return; }
+      const body = `Hi Jeffrey Nortey Productions,\n\nName: ${v('name')}\nOrganisation: ${v('org')}\nEnquiry: ${v('type')}\n\n${v('msg')}`;
+      const url = b.dataset.send === 'wa'
+        ? `https://wa.me/${wa}?text=${encodeURIComponent(body)}`
+        : `mailto:${email}?subject=${encodeURIComponent('Enquiry: ' + v('type'))}&body=${encodeURIComponent(body)}`;
+      window.open(url, b.dataset.send === 'wa' ? '_blank' : '_self');
+    });
+  </script>
+</Base>
